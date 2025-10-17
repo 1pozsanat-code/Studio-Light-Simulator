@@ -13,6 +13,8 @@ interface PromptControlsProps {
   onUpdateCamera: (updates: Partial<DiagramElement>) => void;
   isAutoUpdateEnabled: boolean;
   onAutoUpdateChange: (enabled: boolean) => void;
+  onAddNewLight: (lightType: string) => void;
+  onDeleteLight: (index: number) => void;
 }
 
 const PresetLightingSection: React.FC<{ onSelect: (preset: LightingPreset) => void }> = ({ onSelect }) => (
@@ -212,7 +214,7 @@ const CameraControlSection: React.FC<{ camera: DiagramElement, onUpdate: (update
     );
 };
 
-const IndividualLightControl: React.FC<{ light: DiagramElement, index: number, onUpdate: (index: number, updates: Partial<DiagramElement>) => void }> = ({ light, index, onUpdate }) => {
+const IndividualLightControl: React.FC<{ light: DiagramElement, index: number, onUpdate: (index: number, updates: Partial<DiagramElement>) => void, onDelete: (index: number) => void }> = ({ light, index, onUpdate, onDelete }) => {
     
     const sliderBaseClasses = "w-full h-1.5 bg-gradient-to-r from-indigo-800 to-purple-800 rounded-lg appearance-none cursor-pointer";
     const sliderThumbClasses = "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-amber-400 [&::-webkit-slider-thumb]:shadow-[0_0_5px_rgba(251,191,36,0.7)] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-amber-400 [&::-moz-range-thumb]:shadow-[0_0_5px_rgba(251,191,36,0.7)] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-none";
@@ -228,17 +230,27 @@ const IndividualLightControl: React.FC<{ light: DiagramElement, index: number, o
         <div className="p-3 bg-indigo-900/60 border border-indigo-700/50 rounded-lg">
             <div className="flex justify-between items-center">
                 <label htmlFor={`light-type-${index}`} className="font-semibold text-white">{light.label}</label>
-                <select
-                    id={`light-type-${index}`}
-                    value={light.type || ''}
-                    onChange={(e) => onUpdate(index, { type: e.target.value })}
-                    className="max-w-[150px] text-ellipsis px-2 py-1 text-xs bg-indigo-950 border border-indigo-700 rounded-md focus:ring-1 focus:ring-amber-400 text-gray-300"
-                    aria-label={`Light type for ${light.label}`}
-                >
-                    {allLightTypeOptions.map(option => (
-                        <option key={option} value={option}>{option}</option>
-                    ))}
-                </select>
+                <div className="flex items-center gap-2">
+                    <select
+                        id={`light-type-${index}`}
+                        value={light.type || ''}
+                        onChange={(e) => onUpdate(index, { type: e.target.value })}
+                        className="max-w-[120px] text-ellipsis px-2 py-1 text-xs bg-indigo-950 border border-indigo-700 rounded-md focus:ring-1 focus:ring-amber-400 text-gray-300"
+                        aria-label={`Light type for ${light.label}`}
+                    >
+                        {allLightTypeOptions.map(option => (
+                            <option key={option} value={option}>{option}</option>
+                        ))}
+                    </select>
+                    <button
+                        type="button"
+                        onClick={() => onDelete(index)}
+                        className="w-7 h-7 flex items-center justify-center rounded-md bg-red-900/50 text-red-300 hover:bg-red-700 hover:text-white transition-colors"
+                        aria-label={`Delete ${light.label}`}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clipRule="evenodd" /></svg>
+                    </button>
+                </div>
             </div>
             
             <div className="mt-4 space-y-4">
@@ -312,20 +324,53 @@ const IndividualLightControl: React.FC<{ light: DiagramElement, index: number, o
     );
 };
 
-const IndividualLightControlsSection: React.FC<{ lights: DiagramElement[], onUpdate: (index: number, updates: Partial<DiagramElement>) => void }> = ({ lights, onUpdate }) => {
+const AddLightSection: React.FC<{ onAdd: (lightType: string) => void }> = ({ onAdd }) => {
+    const [selectedType, setSelectedType] = useState(lightSourceOptions[0]);
+
+    const handleAddClick = () => {
+        onAdd(selectedType);
+    };
+
+    return (
+        <div className="mt-4 flex items-center gap-2 p-3 bg-indigo-950/50 border border-dashed border-indigo-700 rounded-lg">
+            <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="flex-grow px-2 py-2 text-sm bg-indigo-900 border border-indigo-700 rounded-md focus:ring-1 focus:ring-amber-400 text-gray-300"
+                aria-label="New light source type"
+            >
+                {lightSourceOptions.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                ))}
+            </select>
+            <button
+                type="button"
+                onClick={handleAddClick}
+                className="px-4 py-2 text-sm font-semibold rounded-md transition-all duration-300 bg-indigo-600 text-white hover:bg-indigo-500 flex items-center gap-2"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" /></svg>
+                Işık Ekle
+            </button>
+        </div>
+    );
+};
+
+const IndividualLightControlsSection: React.FC<{ lights: DiagramElement[], onUpdate: (index: number, updates: Partial<DiagramElement>) => void, onAdd: (lightType: string) => void, onDelete: (index: number) => void }> = ({ lights, onUpdate, onAdd, onDelete }) => {
     return (
         <div className="mb-6 p-4 border border-indigo-800 rounded-lg bg-[#14111d]/50">
             <h3 className="text-lg font-semibold text-amber-400 mb-4">Gelişmiş Işık Kontrolü</h3>
             <div className="space-y-3">
                 {lights.map((light, i) => (
                     <IndividualLightControl
-                        key={`${light.label}-${i}`}
+                        key={i}
                         light={light}
                         index={i}
                         onUpdate={onUpdate}
+                        onDelete={onDelete}
                     />
                 ))}
             </div>
+            <AddLightSection onAdd={onAdd} />
         </div>
     );
 };
@@ -357,6 +402,8 @@ const PromptControls: React.FC<PromptControlsProps> = ({
   onUpdateCamera,
   isAutoUpdateEnabled,
   onAutoUpdateChange,
+  onAddNewLight,
+  onDeleteLight,
 }) => {
   const [scenario, setScenario] = useState('');
   const [selections, setSelections] = useState<{ [key: string]: string[] }>({});
@@ -535,10 +582,12 @@ const PromptControls: React.FC<PromptControlsProps> = ({
                     camera={currentResult.diagram.camera}
                     onUpdate={onUpdateCamera}
                 />
-                {currentResult.diagram?.lights?.length > 0 && 
+                {currentResult.diagram?.lights && 
                     <IndividualLightControlsSection 
                         lights={currentResult.diagram.lights}
                         onUpdate={onUpdateLight}
+                        onAdd={onAddNewLight}
+                        onDelete={onDeleteLight}
                     />
                 }
                 

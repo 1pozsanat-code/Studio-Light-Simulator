@@ -167,6 +167,51 @@ const Studio: React.FC = () => {
     });
     debouncedReconfigure();
   }, [debouncedReconfigure]);
+  
+  const handleAddNewLight = useCallback((lightType: string) => {
+    setCurrentResult(prevResult => {
+      if (!prevResult) return null;
+
+      const newLight: DiagramElement = {
+        label: `Yeni Işık ${prevResult.diagram.lights.length + 1}`,
+        type: lightType,
+        x: 25,
+        y: 25,
+        angle: 0,
+        intensity: 80,
+        colorTemperature: 5500,
+        beamAngle: 90,
+      };
+
+      const newLights = [...prevResult.diagram.lights, newLight];
+
+      return {
+        ...prevResult,
+        diagram: {
+          ...prevResult.diagram,
+          lights: newLights,
+        }
+      };
+    });
+    debouncedReconfigure();
+  }, [debouncedReconfigure]);
+  
+  const handleDeleteLight = useCallback((lightIndex: number) => {
+    setCurrentResult(prevResult => {
+        if (!prevResult) return null;
+
+        const newLights = prevResult.diagram.lights.filter((_, index) => index !== lightIndex);
+
+        return {
+            ...prevResult,
+            diagram: {
+                ...prevResult.diagram,
+                lights: newLights,
+            }
+        };
+    });
+    debouncedReconfigure();
+  }, [debouncedReconfigure]);
 
 
   return (
@@ -182,6 +227,8 @@ const Studio: React.FC = () => {
             onUpdateCamera={handleUpdateCamera}
             isAutoUpdateEnabled={isAutoUpdateEnabled}
             onAutoUpdateChange={setIsAutoUpdateEnabled}
+            onAddNewLight={handleAddNewLight}
+            onDeleteLight={handleDeleteLight}
         />
       </div>
       <div className="w-full lg:flex-1 p-4 flex flex-col relative">

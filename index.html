@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stüdyo Işık Simülatörü</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+      @keyframes flicker {
+        0%, 100% { opacity: 1; }
+        25% { opacity: var(--flicker-opacity, 0.95); }
+        50% { opacity: 0.98; }
+        75% { opacity: 0.92; }
+      }
+      @keyframes subtle-glow {
+        0%, 100% {
+          box-shadow: 0 0 20px rgba(251, 191, 36, 0.3), 0 0 30px rgba(129, 140, 248, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 30px rgba(251, 191, 36, 0.4), 0 0 40px rgba(129, 140, 248, 0.3);
+        }
+      }
+      @keyframes light-shimmer {
+        0%, 100% { opacity: var(--shimmer-start-opacity, 0.4); }
+        50% { opacity: var(--shimmer-end-opacity, 0.6); }
+      }
+      @keyframes dust-motes {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-50px); }
+      }
+      .studio-background-grid {
+        background-image: 
+          linear-gradient(rgba(238, 242, 255, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(238, 242, 255, 0.05) 1px, transparent 1px);
+        background-size: 2rem 2rem;
+      }
+      .studio-vignette::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        box-shadow: inset 0 0 100px 20px rgba(0,0,0,0.5);
+        pointer-events: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "Studio Light Simulator",
+  "description": "A 2D studio lighting simulator for photographers to visualize and analyze lighting setups for fashion and portrait photography using AI.",
+  "requestFramePermissions": []
+}

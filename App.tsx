@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import LandingPage from './components/LandingPage';
-import Studio from './components/Studio';
+import LandingPage from './components/LandingPage.tsx';
+import Studio from './components/Studio.tsx';
 
 const App: React.FC = () => {
   const [showStudio, setShowStudio] = useState(false);

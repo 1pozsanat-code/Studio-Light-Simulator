@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { LightSetupResult, DiagramElement } from '../types';
-import LightingDiagram from './LightingDiagram';
-import Spinner from './Spinner';
-import Logo from './Logo';
+import { LightSetupResult, DiagramElement } from '../types.ts';
+import LightingDiagram from './LightingDiagram.tsx';
+import Spinner from './Spinner.tsx';
+import Logo from './Logo.tsx';
 
 interface DisplayAreaProps {
   result: LightSetupResult | null;

@@ -1,4 +1,4 @@
-import { Preset, LightingPreset } from './types';
+import { Preset, LightingPreset } from './types.ts';
 
 export const PRESETS: Preset[] = [
   {

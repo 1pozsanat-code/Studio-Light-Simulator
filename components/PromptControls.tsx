@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PRESETS, LIGHTING_PRESETS } from '../constants';
-import { Preset, LightingPreset, LightSetupResult, DiagramElement } from '../types';
-import Spinner from './Spinner';
+import { PRESETS, LIGHTING_PRESETS } from '../constants.ts';
+import { Preset, LightingPreset, LightSetupResult, DiagramElement } from '../types.ts';
+import Spinner from './Spinner.tsx';
 
 interface PromptControlsProps {
   onGenerate: (scenario: string, selections: { [key: string]: string[] }) => void;

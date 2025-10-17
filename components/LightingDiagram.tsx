@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { LightingDiagram as LightingDiagramType, DiagramElement } from '../types';
+import { LightingDiagram as LightingDiagramType, DiagramElement } from '../types.ts';
 
 interface LightingDiagramProps {
   diagram: LightingDiagramType;

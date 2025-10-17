@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from './Logo';
+import Logo from './Logo.tsx';
 
 interface LandingPageProps {
   onEnter: () => void;

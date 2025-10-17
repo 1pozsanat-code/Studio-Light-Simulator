@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useRef } from 'react';
-import PromptControls from './PromptControls';
-import DisplayArea from './DisplayArea';
-import HistoryPanel from './HistoryPanel';
-import { LightSetupResult, HistoryEntry, DiagramElement } from '../types';
-import { generateLightingSetup, generateSampleImage, reconfigureFromDiagram } from '../services/geminiService';
+import PromptControls from './PromptControls.tsx';
+import DisplayArea from './DisplayArea.tsx';
+import HistoryPanel from './HistoryPanel.tsx';
+import { LightSetupResult, HistoryEntry, DiagramElement } from '../types.ts';
+import { generateLightingSetup, generateSampleImage, reconfigureFromDiagram } from '../services/geminiService.ts';
 
 const Studio: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ const Studio: React.FC = () => {
       const imageBytes = await generateSampleImage(setupResult.image_prompt);
       let imageUrl: string | undefined = undefined;
       if (imageBytes) {
-        imageUrl = `data:image/jpeg;base64,${imageBytes}`;
+        imageUrl = `data:image/png;base64,${imageBytes}`;
         setCurrentImageUrl(imageUrl);
       }
       
@@ -91,7 +91,7 @@ const Studio: React.FC = () => {
         setCurrentImageUrl(undefined); 
         const imageBytes = await generateSampleImage(image_prompt);
         if (imageBytes) {
-            const imageUrl = `data:image/jpeg;base64,${imageBytes}`;
+            const imageUrl = `data:image/png;base64,${imageBytes}`;
             setCurrentImageUrl(imageUrl);
         }
 

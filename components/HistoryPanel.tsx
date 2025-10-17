@@ -1,5 +1,5 @@
 import React from 'react';
-import { HistoryEntry } from '../types';
+import { HistoryEntry } from '../types.ts';
 
 interface HistoryPanelProps {
   history: HistoryEntry[];

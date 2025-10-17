@@ -311,8 +311,16 @@ const LightingDiagram: React.FC<LightingDiagramProps> = ({ diagram, onUpdateLigh
             };
             const beamAngle = light.beamAngle || 90;
             const intensity = light.intensity || 80;
+            const brightness = light.brightness ?? 100;
+            const contrast = light.contrast ?? 50;
+
             const beamLength = 30 + intensity * 0.9;
-            const baseOpacity = Math.max(0.2, Math.min(0.9, intensity / 110));
+            const baseOpacity = Math.max(0.1, Math.min(0.9, (intensity / 110) * (brightness / 100)));
+
+            const contrastRatio = contrast / 100; // 0 to 1
+            const stop2 = lerp(50, 20, contrastRatio);
+            const stop3 = lerp(90, 40, contrastRatio);
+
             const halfAngleRad = (beamAngle / 2) * (Math.PI / 180);
             const endX1 = beamLength * Math.sin(-halfAngleRad);
             const endY1 = -beamLength * Math.cos(-halfAngleRad);
@@ -414,8 +422,8 @@ const LightingDiagram: React.FC<LightingDiagramProps> = ({ diagram, onUpdateLigh
                         <defs>
                             <radialGradient id={`grad-${index}`} cx="0" cy="0" r={beamLength} gradientUnits="userSpaceOnUse">
                                 <stop offset="0%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.8})`} />
-                                <stop offset="30%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.5})`} />
-                                <stop offset="70%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.2})`} />
+                                <stop offset={`${stop2}%`} stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.5})`} />
+                                <stop offset={`${stop3}%`} stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.2})`} />
                                 <stop offset="100%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},0)`} />
                             </radialGradient>
                         </defs>
@@ -431,12 +439,12 @@ const LightingDiagram: React.FC<LightingDiagramProps> = ({ diagram, onUpdateLigh
                 <div className="text-center pointer-events-none" style={{paddingTop: '1.75rem'}}>
                     <span className={`text-xs block ${lightLabelColor}`} style={textShadowStyle}>{light.label}</span>
                     <span className={`text-xs block ${lightTypeColor}`} style={textShadowStyle}>{light.type}</span>
-                    {(light.colorTemperature || light.beamAngle) && (
-                    <div className={`text-xs mt-0.5 flex gap-2 justify-center ${lightDetailsColor}`} style={textShadowStyle}>
+                    <div className={`text-xs mt-0.5 flex flex-wrap gap-x-2 gap-y-0 justify-center ${lightDetailsColor}`} style={textShadowStyle}>
                         {light.colorTemperature && <span>{light.colorTemperature}K</span>}
                         {light.beamAngle && <span>{light.beamAngle}°</span>}
+                        {light.brightness !== undefined && <span>P: {light.brightness}%</span>}
+                        {light.contrast !== undefined && <span>K: {light.contrast}%</span>}
                     </div>
-                    )}
                 </div>
                 {/* INTERACTIVE HANDLES */}
                 <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity">

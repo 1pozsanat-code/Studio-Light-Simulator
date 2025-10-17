@@ -41,10 +41,12 @@ const lightingSetupSchema = {
               type: { type: Type.STRING },
               angle: { type: Type.NUMBER },
               intensity: { type: Type.NUMBER, description: "Light intensity from 0 to 100." },
+              brightness: { type: Type.NUMBER, description: "Light brightness from 0 to 100. Higher values create stronger highlights." },
+              contrast: { type: Type.NUMBER, description: "Light contrast from 0 to 100. Higher values create harder, more defined shadows." },
               colorTemperature: { type: Type.NUMBER, description: "Color temperature in Kelvin (e.g., 3200 for warm, 5500 for neutral)." },
               beamAngle: { type: Type.NUMBER, description: "Beam angle/spread in degrees (e.g., 30 for narrow, 120 for wide)." },
             },
-            required: ['x', 'y', 'label', 'type', 'angle', 'intensity', 'colorTemperature', 'beamAngle']
+            required: ['x', 'y', 'label', 'type', 'angle', 'intensity', 'brightness', 'contrast', 'colorTemperature', 'beamAngle']
           },
         },
         backdrop: {
@@ -84,7 +86,7 @@ export const generateLightingSetup = async (scenario: string, selections: { [key
   const systemInstruction = `Sen 'Lumi' adında, dünya standartlarında bir AI fotoğraf aydınlatma yönetmenisin. Görevin, kullanıcının senaryosuna göre 2D bir stüdyo aydınlatma düzeni tasarlamaktır.
     - Kullanıcının isteğini ve ekipman seçimlerini analiz et.
     - 2D bir aydınlatma diyagramını temsil eden bir JSON nesnesi oluştur. Stüdyo 100x100'lük bir ızgaradır. Model genellikle merkeze yakındır. Kamera için, senaryoya uygun bir lens odak uzaklığı ('focalLength') öner (ör. portre için 85mm, geniş çekim için 35mm).
-    - Her ışık için yoğunluğunu (0-100), renk sıcaklığını (Kelvin) ve ışın açısını (derece) belirt. Renk sıcaklığı için 'Warm' (Sıcak) ~3200K, 'Neutral' (Nötr) ~5500K, 'Cool' (Soğuk) ~7500K'dır. Işın açısı için 'Narrow' (Dar) ışın < 45 derece, 'Wide' (Geniş) > 90 derecedir.
+    - Her ışık için yoğunluğunu (0-100), parlaklığını (brightness, 0-100), kontrastını (0-100), renk sıcaklığını (Kelvin) ve ışın açısını (derece) belirt. Yüksek parlaklık daha güçlü vurgular oluşturur. Yüksek kontrast daha sert, daha belirgin gölgeler oluşturur. Renk sıcaklığı için 'Warm' (Sıcak) ~3200K, 'Neutral' (Nötr) ~5500K, 'Cool' (Soğuk) ~7500K'dır. Işın açısı için 'Narrow' (Dar) ışın < 45 derece, 'Wide' (Geniş) > 90 derecedir.
     - Aydınlatmanın etkisi üzerine, yoğunluk ve rengin etkisini de içeren, öz ve uzman bir analizi TÜRKÇE olarak sun.
     - Işık rengini, kalitesini (ör. 'warm, soft light') ve kamera lensini (ör. 'shot on an 85mm lens') belirttiğinden emin olarak, bir AI görüntü oluşturucu için son derece ayrıntılı, sanatsal bir prompt oluştur (bu prompt İngilizce olmalıdır). ÖNEMLİ: Bu görüntü prompt'u, nihai görselde ışık, softbox, kamera veya stand gibi HİÇBİR stüdyo ekipmanının görünmemesi gerektiğini belirtmelidir. Sadece konuya ve aydınlatma etkisine odaklan.
     - Tüm koordinatların (x, y) 0-100 aralığında olduğundan emin ol. Işık ve kamera açıları 0 ile 360 arasında olmalıdır.
@@ -124,7 +126,7 @@ export const reconfigureFromDiagram = async (diagram: LightingDiagram, originalR
     const model = 'gemini-2.5-pro';
 
     const systemInstruction = `Sen 'Lumi' adında, dünya standartlarında bir AI fotoğraf aydınlatma yönetmenisin. Görevin, sana sağlanan 2D aydınlatma diyagramındaki değişikliklere dayanarak mevcut bir analizi ve görüntü istemini (prompt) GÜNCELLEMEKTİR.
-    - Sağlanan JSON'daki her ışığın ve kameranın konumunu, açısını, yoğunluğunu, renk sıcaklığını ve özellikle kameranın 'focalLength' (odak uzaklığı) değerini dikkate al.
+    - Sağlanan JSON'daki her ışığın ve kameranın konumunu, açısını, yoğunluğunu, parlaklığını, kontrastını, renk sıcaklığını ve özellikle kameranın 'focalLength' (odak uzaklığı) değerini dikkate al.
     - Orijinal analiz ve görüntü istemi aşağıda verilmiştir.
     - Analizi TÜRKÇE olarak, sadece diyagramdaki değişiklikleri yansıtacak şekilde GÜNCELLE. Değişmeyen kısımları koru.
     - Görüntü istemini (İngilizce olmalıdır) sadece aydınlatma ve kamera değişikliklerinin (odak uzaklığı dahil) etkisini yansıtacak şekilde GÜNCELLE. Konuyu, stili, kompozisyonu veya diğer sanatsal unsurları DEĞİŞTİRME. Amaç, yapılan ince ayarın etkisini A/B testi yapar gibi net bir şekilde göstermektir.

@@ -179,6 +179,8 @@ const Studio: React.FC = () => {
         y: 25,
         angle: 0,
         intensity: 80,
+        brightness: 100,
+        contrast: 50,
         colorTemperature: 5500,
         beamAngle: 90,
       };

@@ -5,6 +5,8 @@ export interface DiagramElement {
   type?: string;
   angle?: number;
   intensity?: number; // 0-100
+  brightness?: number; // 0-100
+  contrast?: number; // 0-100
   colorTemperature?: number; // Kelvin
   beamAngle?: number; // degrees
   focalLength?: number; // in mm

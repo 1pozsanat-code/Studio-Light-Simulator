@@ -271,6 +271,38 @@ const IndividualLightControl: React.FC<{ light: DiagramElement, index: number, o
                     <span className={tooltipClasses}>Işığın parlaklığını ayarlar.</span>
                 </div>
                 <div className="relative group">
+                    <label htmlFor={`brightness-${index}`} className="flex justify-between text-xs font-medium text-gray-300 mb-1">
+                        <span>Parlaklık</span>
+                        <span>{light.brightness ?? 100}%</span>
+                    </label>
+                    <input 
+                        type="range" 
+                        id={`brightness-${index}`}
+                        min="0" 
+                        max="100" 
+                        value={light.brightness ?? 100}
+                        onChange={(e) => onUpdate(index, { brightness: parseInt(e.target.value, 10) })}
+                        className={`${sliderBaseClasses} ${sliderThumbClasses}`}
+                    />
+                    <span className={tooltipClasses}>Işığın genel gücünü ve vurgu parlaklığını ayarlar.</span>
+                </div>
+                <div className="relative group">
+                    <label htmlFor={`contrast-${index}`} className="flex justify-between text-xs font-medium text-gray-300 mb-1">
+                        <span>Kontrast</span>
+                        <span>{light.contrast ?? 50}%</span>
+                    </label>
+                    <input 
+                        type="range" 
+                        id={`contrast-${index}`}
+                        min="0" 
+                        max="100" 
+                        value={light.contrast ?? 50}
+                        onChange={(e) => onUpdate(index, { contrast: parseInt(e.target.value, 10) })}
+                        className={`${sliderBaseClasses} ${sliderThumbClasses}`}
+                    />
+                    <span className={tooltipClasses}>Gölge ve ışık arasındaki geçişin sertliğini ayarlar.</span>
+                </div>
+                <div className="relative group">
                     <label htmlFor={`colorTemp-${index}`} className="flex justify-between text-xs font-medium text-gray-300 mb-1">
                         <span>Renk Sıcaklığı</span>
                         <span>{light.colorTemperature || 5500}K</span>

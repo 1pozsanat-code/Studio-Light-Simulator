@@ -46,7 +46,7 @@ const Studio: React.FC = () => {
       const imageBytes = await generateSampleImage(setupResult.image_prompt);
       let imageUrl: string | undefined = undefined;
       if (imageBytes) {
-        imageUrl = `data:image/png;base64,${imageBytes}`;
+        imageUrl = `data:image/jpeg;base64,${imageBytes}`;
         setCurrentImageUrl(imageUrl);
       }
       
@@ -60,7 +60,11 @@ const Studio: React.FC = () => {
       setHistory(prev => [newHistoryEntry, ...prev]);
 
     } catch (err: any) {
-      setError(err.message || "An unknown error occurred.");
+      let errorMessage = err.message || "An unknown error occurred.";
+      if (errorMessage.includes("Failed to generate sample image")) {
+        errorMessage = "Görsel oluşturulamadı. Model geçici olarak kullanılamıyor olabilir veya oluşturulan prompt güvenlik filtreleri tarafından reddedilmiş olabilir. Lütfen farklı bir senaryo ile tekrar deneyin.";
+      }
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -91,12 +95,16 @@ const Studio: React.FC = () => {
         setCurrentImageUrl(undefined); 
         const imageBytes = await generateSampleImage(image_prompt);
         if (imageBytes) {
-            const imageUrl = `data:image/png;base64,${imageBytes}`;
+            const imageUrl = `data:image/jpeg;base64,${imageBytes}`;
             setCurrentImageUrl(imageUrl);
         }
 
     } catch (err: any) {
-        setError(err.message || "An unknown error occurred during reconfiguration.");
+        let errorMessage = err.message || "An unknown error occurred during reconfiguration.";
+        if (errorMessage.includes("Failed to generate sample image")) {
+            errorMessage = "Görsel güncellenemedi. Model geçici olarak kullanılamıyor olabilir veya oluşturulan prompt güvenlik filtreleri tarafından reddedilmiş olabilir. Lütfen farklı bir ayar ile tekrar deneyin.";
+        }
+        setError(errorMessage);
     } finally {
         setIsReconfiguring(false);
     }

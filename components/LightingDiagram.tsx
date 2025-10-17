@@ -348,18 +348,22 @@ const LightingDiagram: React.FC<LightingDiagramProps> = ({ diagram, onUpdateLigh
                             clipPath: `path('${beamPath}')`
                         }}
                     >
-                        <svg width="100%" height="100%" viewBox={`-${beamLength} -${beamLength} ${beamLength * 2} ${beamLength * 2}`} className="opacity-80" style={{ overflow: 'visible' }}>
+                        <svg width="100%" height="100%" viewBox={`-${beamLength} -${beamLength} ${beamLength * 2} ${beamLength * 2}`} style={{ overflow: 'visible' }}>
                             <defs>
                                 <radialGradient id={`effect-grad-${index}`} cx="0" cy="0" r={beamLength} gradientUnits="userSpaceOnUse">
-                                    <stop offset="0%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},1)`} />
+                                    <stop offset="0%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},0.8)`} />
                                     <stop offset="100%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},0)`} />
                                 </radialGradient>
-                                <filter id={`dust-motes-filter-${index}`}>
-                                    <feTurbulence type="fractalNoise" baseFrequency="0.2" numOctaves="1" result="turbulence"/>
+                                <filter id={`dust-motes-filter-1-${index}`}>
+                                    <feTurbulence type="fractalNoise" baseFrequency="0.3" numOctaves="1" result="turbulence"/>
+                                    <feGaussianBlur stdDeviation="1.5" />
+                                </filter>
+                                <filter id={`dust-motes-filter-2-${index}`}>
+                                    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="1" result="turbulence"/>
                                     <feGaussianBlur stdDeviation="1" />
                                 </filter>
                             </defs>
-                            {/* Main Haze Layer */}
+                            {/* Volumetric Haze Layer */}
                             <rect
                                 x={-beamLength}
                                 y={-beamLength}
@@ -368,36 +372,50 @@ const LightingDiagram: React.FC<LightingDiagramProps> = ({ diagram, onUpdateLigh
                                 fill={`url(#effect-grad-${index})`}
                                 style={{
                                     ...({
-                                        '--shimmer-start-opacity': baseOpacity * 0.3,
-                                        '--shimmer-end-opacity': baseOpacity * 0.5,
+                                        '--haze-start-opacity': baseOpacity * 0.4,
+                                        '--haze-end-opacity': baseOpacity * 0.6,
                                     } as React.CSSProperties),
-                                    animation: `light-shimmer ${lerp(6, 3, intensity / 100)}s ease-in-out infinite`,
-                                    filter: 'blur(5px)',
+                                    animation: `haze-swirl ${lerp(8, 5, intensity / 100)}s ease-in-out infinite`,
+                                    filter: 'blur(12px)',
                                 }}
                             />
-                            {/* Dust Motes Layer */}
+                            {/* Dust Motes Layer 1 (larger, slower) */}
                             <rect
                                 x={-beamLength}
                                 y={-beamLength}
                                 width={beamLength * 2}
-                                height={beamLength * 2 + 50} // Taller for animation
+                                height={beamLength * 2}
                                 fill="white"
-                                filter={`url(#dust-motes-filter-${index})`}
+                                filter={`url(#dust-motes-filter-1-${index})`}
                                 style={{
-                                    opacity: baseOpacity * 0.08,
-                                    animation: `dust-motes ${lerp(10, 5, intensity / 100)}s linear infinite`,
+                                    opacity: baseOpacity * 0.07,
+                                    animation: `dust-motes-1 ${lerp(12, 7, intensity / 100)}s linear infinite`,
+                                }}
+                            />
+                            {/* Dust Motes Layer 2 (smaller, faster) */}
+                            <rect
+                                x={-beamLength}
+                                y={-beamLength}
+                                width={beamLength * 2}
+                                height={beamLength * 2}
+                                fill="white"
+                                filter={`url(#dust-motes-filter-2-${index})`}
+                                style={{
+                                    opacity: baseOpacity * 0.05,
+                                    animation: `dust-motes-2 ${lerp(9, 5, intensity / 100)}s linear infinite`,
+                                    animationDelay: '-2s',
                                 }}
                             />
                         </svg>
                     </div>
                 )}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" style={{width: beamLength * 2, height: beamLength * 2, transform: `rotate(${light.angle || 0}deg)`}}>
-                    <svg width="100%" height="100%" viewBox={`-${beamLength} -${beamLength} ${beamLength * 2} ${beamLength * 2}`} className="opacity-80 group-hover:opacity-100 transition-opacity duration-300" style={{ overflow: 'visible' }}>
+                    <svg width="100%" height="100%" viewBox={`-${beamLength} -${beamLength} ${beamLength * 2} ${beamLength * 2}`} className="opacity-70 group-hover:opacity-90 transition-opacity duration-300" style={{ overflow: 'visible' }}>
                         <defs>
                             <radialGradient id={`grad-${index}`} cx="0" cy="0" r={beamLength} gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.7})`} />
-                                <stop offset="25%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.4})`} />
-                                <stop offset="75%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.1})`} />
+                                <stop offset="0%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.8})`} />
+                                <stop offset="30%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.5})`} />
+                                <stop offset="70%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},${baseOpacity * 0.2})`} />
                                 <stop offset="100%" stopColor={`rgba(${rgb.r},${rgb.g},${rgb.b},0)`} />
                             </radialGradient>
                         </defs>

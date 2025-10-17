@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type, Modality } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { LightSetupResult, LightingDiagram } from '../types.ts';
 
 // Fix: Per coding guidelines, initialize GoogleGenAI directly with the API key from environment variables, without fallbacks or warnings.
@@ -167,24 +167,20 @@ export const reconfigureFromDiagram = async (diagram: LightingDiagram, originalR
 };
 
 export const generateSampleImage = async (prompt: string): Promise<string | null> => {
-    const model = 'gemini-2.5-flash-image';
+    const model = 'imagen-4.0-generate-001';
     try {
-        const response = await ai.models.generateContent({
+        const response = await ai.models.generateImages({
             model,
-            contents: {
-                parts: [{ text: prompt }],
-            },
+            prompt,
             config: {
-                responseModalities: [Modality.IMAGE],
+              numberOfImages: 1,
+              outputMimeType: 'image/jpeg',
+              aspectRatio: '3:4', // The UI has an aspect-[3/4] container for the image.
             },
         });
 
-        if (response.candidates && response.candidates.length > 0) {
-            for (const part of response.candidates[0].content.parts) {
-                if (part.inlineData) {
-                    return part.inlineData.data;
-                }
-            }
+        if (response.generatedImages && response.generatedImages.length > 0) {
+            return response.generatedImages[0].image.imageBytes;
         }
         return null;
     } catch (error) {

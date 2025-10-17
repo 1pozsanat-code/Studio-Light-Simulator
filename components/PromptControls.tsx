@@ -70,8 +70,12 @@ const CustomPresetSection: React.FC<CustomPresetSectionProps> = ({
                                 }}
                                 autoFocus
                             />
-                            <button onClick={() => onSaveEdit(preset.name, editingValue)} className="text-green-400 hover:text-green-300 p-1 rounded-full" aria-label="Save name">✓</button>
-                            <button onClick={onCancelEdit} className="text-red-400 hover:text-red-300 p-1 rounded-full" aria-label="Cancel edit">×</button>
+                            <button onClick={() => onSaveEdit(preset.name, editingValue)} className="flex items-center justify-center w-6 h-6 rounded-full text-green-400 hover:bg-green-500/20 hover:text-green-300" aria-label="Save name">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                            </button>
+                            <button onClick={onCancelEdit} className="flex items-center justify-center w-6 h-6 rounded-full text-red-400 hover:bg-red-500/20 hover:text-red-300" aria-label="Cancel edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
+                            </button>
                         </div>
                     ) : (
                         <>
@@ -94,7 +98,7 @@ const CustomPresetSection: React.FC<CustomPresetSectionProps> = ({
                                     className="w-5 h-5 flex items-center justify-center rounded-full bg-purple-800/50 text-purple-300 hover:bg-red-500 hover:text-white"
                                     aria-label={`Delete ${preset.name}`}
                                 >
-                                    &times;
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
                                 </button>
                             </div>
                         </>
